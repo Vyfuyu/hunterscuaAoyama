@@ -3,7 +3,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2
 local Window = MakeWindow({
   Hub = {
     Title = "Aoyama x Nhật Anh",
-    Animation = "Sủa Cái Lồn Chó Mày"
+    Animation = "Sủa Cái Chó Gì"
   },
   Key = {
     KeySystem = false,
@@ -56,6 +56,7 @@ local CombatTab = MakeTab({Name = "Combat"})
 local autoCombat = false
 local autoDungeon = false
 local killMobs = false
+local flyOnTop = false -- biến cho chức năng đứng trên không
 
 -- Auto Combat Max Speed
 AddToggle(CombatTab, {
@@ -118,6 +119,36 @@ AddToggle(CombatTab, {
           wait(0.2)
         end
       end)
+    end
+  end
+})
+
+-- Đứng Trên Không (thêm vào Combat tab)
+AddToggle(CombatTab, {
+  Name = "Đứng Trên Không",
+  Default = false,
+  Callback = function(state)
+    flyOnTop = state
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local spawn = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("DoubleDungeonD") and workspace.Map.DoubleDungeonD:FindFirstChild("SpawnLocation")
+
+    if state then
+      if spawn then
+        hrp.CFrame = spawn.CFrame + Vector3.new(0, 35, 0)
+        if char:FindFirstChild("Humanoid") then
+          char.Humanoid.PlatformStand = true
+        end
+        hrp.Anchored = true
+      end
+    else
+      if hrp then
+        hrp.Anchored = false
+        if char:FindFirstChild("Humanoid") then
+          char.Humanoid.PlatformStand = false
+        end
+      end
     end
   end
 })
